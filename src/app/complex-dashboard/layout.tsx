@@ -1,18 +1,22 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 
 export default function DashboardLayout({
   children,
   users,
   revenue,
   notifications,
+  login,
 }: {
   children: React.ReactNode;
   users: React.ReactNode;
   revenue: React.ReactNode;
   notifications: React.ReactNode;
+  login: React.ReactNode;
 }) {
-  return (
-    <>
+  const [isLoggedIn, setLogIn] = useState(false);
+  return isLoggedIn ? (
+    <div>
       <div>{children}</div>
       <div style={{ display: "flex" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -21,6 +25,11 @@ export default function DashboardLayout({
         </div>
         <div style={{ display: "flex", flex: 1 }}>{notifications}</div>
       </div>
-    </>
+    </div>
+  ) : (
+    <div>
+      {login}
+      <button onClick={() => setLogIn(true)}>log in</button>
+    </div>
   );
 }
