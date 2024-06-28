@@ -1,8 +1,8 @@
 "use client";
 import { notFound } from "next/navigation";
 
-const generateRandom = (number: number) => {
-  return Math.random() * number;
+const getRandomInt = (number: number) => {
+  return Math.floor(Math.random() * number);
 };
 
 export default function ReviewDetail({
@@ -10,7 +10,7 @@ export default function ReviewDetail({
 }: {
   params: { productId: string; reviewId: string };
 }) {
-  const random = generateRandom(2);
+  const random = getRandomInt(2);
   console.log(random);
   if (random <= 1) {
     throw new Error("this is error");
