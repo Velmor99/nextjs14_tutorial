@@ -1,0 +1,76 @@
+1) All components in next.js are "Server components"
+2) App router requre all routes in app folder and specific syntax with nested routes and dynamic routes.
+3) Nested dynamic routes: app - about - page.tsx
+                              - products - page.tsx 
+                                         - [productId] - page.tsx
+                                                       - reviews - [reviewId] - page.tsx
+4) Catch all segments: app - docs - [...slug] - page.tsx  If you need common page on "/docs" you can use double square brackets "[[...slug]]"
+5) In nextjs we have a not-found function that helps us redirect our customers manualy to the not found page (expample in /products/productId/reviews/reviewId)
+   Also we can create a not-found page for everyone page we have
+6) For creating private folders you shoud add "_" prefix to name that folder. Private folders: for separating UI logic form routing logic, for consisteltly organizing internal files across a project
+   for sorting and grouping files in code editors, and finally, for avoiding potential naming conflicts with future Next.js file conventions.
+   If you want to include an underscore in URL segments, you can prefix the folder name with "%5F," which is the URL-encoded form of an underscore
+7) Route Groups: Allow us to logically group our routes and project files without affecting the URL path structure
+   If you need to group routes you have to cover the folder name into "()" circle brackets like "(auth)" and next will ignore name "auth" it won't be in URL path
+8) Layouts: a layout is UI that is shared between multiple pages in the app. You can define a layout by default exporting a React component from a layout.js 
+   or layout.tsx file. That component should accept a children prop that will be populated with a child page during rendering
+9) If you need specific layout for your page you can create a layout.tsx on page level this is the nested layout
+10) For creating a group layout you can define it like a group folder and add layout.tsx to it
+11) Ensuring proper search engine optimization (SEO) is crucial for increasing visibility and attracting users. Next.js introduced the Metadata API which allows you 
+    to define metadata for each page. Metadata ensures accurate and relevant information is displayed when your pages are shared or indexed.
+    In nextjs you can confiure metadata in layout.tsx or in page.tsx, you can export a static metadata object or export a dynamic generateMetadata function
+    Metadata rules:
+    a) Both layout.tsx and page.tsx files can export metadata. If defined in a layout, it applies to all pages in that layout, but if difined in a page,
+       it applies only to that page.
+    b) Metadata is read in order, from the root level down to the final page level
+    c) When there's metadata in multiple places for the same route, they get combined, but page metadata will replace layout metadata if they have the same
+       properties.
+       Example in products/[productId]/page.tsx and in about
+12) title Metadata: The title field's primary purpose is to define the document title. It can be either a string or an object. More in general layout.tsx and blog/first/page.tsx
+13) Navigation: To enable client-side navigation Next.js provides us with the Link component. The '<Link>' component is a React component that extends the HTML '<a>' element,
+    and it's the primay way to navigate between routes in Next.js. To use it, we need to import it from "next/link"
+14) !!! As you know in nextjs all components are "Server Components" and there don't work any hooks, if you need to use hooks you have to write "use client"
+    on the top of page. For finding active link you can use "usePathname" from "next/navigation" and compare current path with link value. Example in (auth)/(with-auth-layout)/layout.tsx
+15) For using router you can define "useRouter" from "next/navigation" and configure your path programmatically. Example in (auth)/(with-auth-layout)/layout.tsx
+16) TEMPLATES!!!: Temlates are similar to layouts in that wrap each layout or page, but, with templates, when a user navigates between routes that share a template,
+    a new instance of the component is mounted, DOM elements are recreated, state is not preserved, and effects are re-synchronized. A template can be defined by exporting a 
+    default React component form a template.js or template.tsx file. Similar to layouts, templates also should accept a children prop which will render the nested
+    segments in the route. Example in (auth)/(with-auth-layout)/template.tsx. Layout.tsx renders first and then rendres template.tsx and in the end renders page.tsx
+17) For UI Loading in nextjs we have a loading.tsx component that hepls us to show loader when user change a route and content is loading. You can display the loading state
+    as soon as a user navigates to a new route. The immediate feedback reassures users that their action has been acknowledge, reduces perceived loading times, 
+    and makes the application feel more responsive. Next.js allows the creation of shared layouts that remain interactive while new route segments are loading.
+    That means users can continue interacting with certain parts of the application, such as a navigation menu or sidebar, even if the main content is still being fetched.
+18) For handling errors in nextjs we have an error.tsx component. Define it on the same level with a page.tsx for caching error that my happen in the page.tsx
+    Error.tsx: Automatically wrap a route segment and its nested children in a React Error Boundary. Create error UI tailored to specific segments using the file-system hierarchy
+    to adjust ganularity. Isolate errors to affected segments while keeping the rest of the application functional. Add functionality to attempt to recover from an error a full page reload.
+    Example in products/[productId]/reviews/[reviewId]/error.tsx
+19) If you need recover from errors you may use "reset" function like in products/[productId]/reviews/[reviewId]/error.tsx
+20) We must place our error.tsx on the top level of layout.tsx because error.tsx on the same level as layout.tsx won't work
+21) Parallel Routes: Parallel routes are an advanced routing mechanism that allows for the simultaneous rendering of multiple pages within the same layout
+    Parallel routes in Next.js are defined using a feature known as slots
+    Slots help structure our content in a modular fashion
+    To define a slot, we use the `@folder` naming convention
+    Each slot is then passed as a prop to its corresponding `layout.tsx` file.
+    Example in complex-dashboard, you should know that the @notification or @revenue or @users does not match in the URL and you will catch an 404 error 
+    Parallel Routes Benefits: A clear benefit of parallel routes is their ability to split a single layout into various slots, making the code more manageable.
+    Independent route handling and sub-navigation.
+    Independent Route Handling: It means - each slots of your layout, such as user analytics or revenue metrics, can have its own loading and error states. This 
+    granular control is particularly beneficial in scenarios where different sections of the page load at varying speeds or encouter unique errors.
+    Sub-navigation in routes: It means - each slot of your dashboard can essentially function as a mini-application, complete with its own navigation and state managment.
+    This is especially usefull in a complex application such as our dashboard where different sections serve distinct purposes.
+22) Unmatched Routes: Navigation from the UI - In case of navigation within the UI, Next.js retains the previously active state of a slot regardless of changes in the URL.
+    Page reload - Next.js immediately searches for a default.tsx file within ezch unmached slot. The presence of this file is critical, as it provides the default content that
+    Next.js will render in the user interface. If this default.tsx file is missing in any of the unmatched slots for the current route, Next.js will render a 404 error.
+    Example in /complex-dashboard/@notifications/archived and all default.tsx files in /complex-dashboard
+23) Conditional route example in /complex-dashboard/layout.tsx
+24) Intercepting Routes: Intercepting routes allow you to intercept or stop the default routing behaviour to present an alternate view or component when navigating
+    throuhg the UI, while still preserving the intended for scenarios like page reloads. This can be useful if you want to show a route while keeping the context of the current page.
+    Intercepting Routes Conventions: (.) - to match segments on the same level, (..) - to match segments one level above, (..)(..) - to match segments two level above, (...) - to match
+    segments from the root app directory
+    Example in /f1/f2 and /f1/(.)f2 and /f1/f4 and /f1/f4/(..)f3
+25) Parallel Intercepting Routes - https://www.youtube.com/watch?v=mVOvx9eVHg0&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=33&ab_channel=Codevolution
+26) Route Handlers: Unlike page routes, which respond with HTML content, route handlers allow you to create RESTful endpoints, giving you full control over the response 
+    There is no overhead of having to create and configure a separate server. Route handlers are also great for making external API requests.
+    Route handlers run server-side, ensuring that sensitive information like private keys remains secure and never gets shipped to the browser.
+    Route Handlers are the equivalent of API routes in Page router.
+    Example in /hello/route.tsx and if you need to prevent conflict between route handlers and pages you must place your route.tsx in api folder like in /dashboard/api/route.tsx
