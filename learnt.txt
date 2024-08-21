@@ -74,3 +74,4 @@
     Route handlers run server-side, ensuring that sensitive information like private keys remains secure and never gets shipped to the browser.
     Route Handlers are the equivalent of API routes in Page router.
     Example in /hello/route.tsx and if you need to prevent conflict between route handlers and pages you must place your route.tsx in api folder like in /dashboard/api/route.tsx
+DONE
